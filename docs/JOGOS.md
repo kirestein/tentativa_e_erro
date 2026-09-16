@@ -51,6 +51,38 @@ meu-jogo/
     som.wav
 ```
 
+### O pygbag sempre executa um arquivo chamado `main.py`
+
+Não importa qual arquivo você passar na linha de comando (`pygbag
+pygame_game.py`, por exemplo) — no navegador ele **sempre** roda
+`main.py` na raiz do projeto. Se o seu repositório já tem um `main.py`
+para outra coisa (ex: uma versão de terminal do jogo), **não o edite**:
+crie uma pasta separada só para o build web, com seu próprio `main.py`
+mínimo que chama a função principal do jogo:
+
+```python
+# web_build/main.py
+import asyncio
+import pygame  # IMPORTANTE: veja a nota abaixo
+
+from meu_jogo import main  # sua função async real, definida em outro arquivo
+
+asyncio.run(main())
+```
+
+Copie os demais arquivos `.py` (e a pasta `assets/`) do jogo para dentro
+dessa pasta antes de rodar o pygbag nela.
+
+### `main.py` precisa importar `pygame` explicitamente
+
+O pygbag decide quais bibliotecas baixar/compilar **lendo o texto** do
+`main.py`, não analisando de verdade os imports do projeto inteiro. Se o
+`main.py` só faz `from meu_jogo import main` (sem a palavra `pygame`
+aparecer nele), o pygbag não carrega o pacote completo do Pygame, e o
+jogo quebra em tempo de execução com `AttributeError: module 'pygame'
+has no attribute 'init'`. Solução: sempre inclua `import pygame` (mesmo
+que não seja usado diretamente) no `main.py` do build web.
+
 ## 3. Gerar o build web
 
 Dentro da pasta do jogo:
