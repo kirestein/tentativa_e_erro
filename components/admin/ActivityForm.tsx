@@ -14,6 +14,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
   );
   const [published, setPublished] = useState(initialData?.published ?? true);
   const [file, setFile] = useState<File | null>(null);
+  const [lessonPlanFile, setLessonPlanFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +34,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
 
     try {
       let pdf_path = initialData?.pdf_path;
+      let lesson_plan_path = initialData?.lesson_plan_path;
 
       if (file) {
         const path = `${crypto.randomUUID()}-${file.name}`;
@@ -43,16 +45,37 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
         pdf_path = path;
       }
 
+      if (lessonPlanFile) {
+        const path = `${crypto.randomUUID()}-${lessonPlanFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("pdfs")
+          .upload(path, lessonPlanFile, { contentType: "application/pdf" });
+        if (uploadError) throw uploadError;
+        lesson_plan_path = path;
+      }
+
       if (isEditing && initialData) {
         const { error: updateError } = await supabase
           .from("activities")
-          .update({ title, theme, description, published, pdf_path })
+          .update({
+            title,
+            theme,
+            description,
+            published,
+            pdf_path,
+            lesson_plan_path,
+          })
           .eq("id", initialData.id);
         if (updateError) throw updateError;
       } else {
-        const { error: insertError } = await supabase
-          .from("activities")
-          .insert({ title, theme, description, published, pdf_path });
+        const { error: insertError } = await supabase.from("activities").insert({
+          title,
+          theme,
+          description,
+          published,
+          pdf_path,
+          lesson_plan_path,
+        });
         if (insertError) throw insertError;
       }
 
@@ -106,12 +129,26 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
 
       <div>
         <label className="mb-1 block text-sm font-medium">
-          Arquivo PDF {isEditing && "(deixe em branco para manter o atual)"}
+          Arquivo da atividade (PDF){" "}
+          {isEditing && "(deixe em branco para manter o atual)"}
         </label>
         <input
           type="file"
           accept="application/pdf"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          className="w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">
+          Plano de aula (PDF, opcional){" "}
+          {isEditing && "(deixe em branco para manter o atual)"}
+        </label>
+        <input
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => setLessonPlanFile(e.target.files?.[0] ?? null)}
           className="w-full rounded-md border px-3 py-2"
         />
       </div>

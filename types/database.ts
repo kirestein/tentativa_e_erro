@@ -4,6 +4,7 @@ export type Activity = {
   theme: string;
   description: string | null;
   pdf_path: string;
+  lesson_plan_path: string | null;
   published: boolean;
   created_at: string;
   updated_at: string;

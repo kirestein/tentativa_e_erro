@@ -22,6 +22,9 @@ export default async function AtividadeDetailPage({
   }
 
   const fileUrl = pdfPublicUrl(activity.pdf_path);
+  const lessonPlanUrl = activity.lesson_plan_path
+    ? pdfPublicUrl(activity.lesson_plan_path)
+    : null;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -33,14 +36,26 @@ export default async function AtividadeDetailPage({
         <p className="mb-6 text-gray-600">{activity.description}</p>
       )}
 
-      <a
-        href={fileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mb-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-      >
-        Baixar PDF
-      </a>
+      <div className="mb-6 flex flex-wrap gap-3">
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Baixar PDF
+        </a>
+        {lessonPlanUrl && (
+          <a
+            href={lessonPlanUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded-md border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            Baixar plano de aula
+          </a>
+        )}
+      </div>
 
       <div className="overflow-hidden rounded-lg border bg-white">
         <iframe src={fileUrl} className="h-[80vh] w-full" title={activity.title} />

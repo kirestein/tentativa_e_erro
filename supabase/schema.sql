@@ -17,10 +17,14 @@ create table if not exists public.activities (
   theme text not null,
   description text,
   pdf_path text not null,
+  lesson_plan_path text,
   published boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Caso a tabela já exista de uma instalação anterior, adiciona a coluna nova:
+alter table public.activities add column if not exists lesson_plan_path text;
 
 -- 3. Jogos ------------------------------------------------------------------------
 create table if not exists public.games (
