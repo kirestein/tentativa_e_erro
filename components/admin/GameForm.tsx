@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import JSZip from "jszip";
 import { createClient } from "@/lib/supabase/client";
@@ -162,13 +163,24 @@ export function GameForm({ initialData }: { initialData?: Game }) {
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-      >
-        {saving ? progress || "Salvando..." : "Salvar"}
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {saving ? progress || "Salvando..." : "Salvar"}
+        </button>
+        {isEditing && initialData && (
+          <Link
+            href={`/jogos/${initialData.id}`}
+            target="_blank"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Ver página pública ↗
+          </Link>
+        )}
+      </div>
     </form>
   );
 }

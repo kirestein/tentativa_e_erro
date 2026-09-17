@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { generatePdfCoverBlob } from "@/lib/pdfThumbnail";
 import type { Activity } from "@/types/database";
 
 export function ActivityForm({ initialData }: { initialData?: Activity }) {
@@ -16,6 +18,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
   const [file, setFile] = useState<File | null>(null);
   const [lessonPlanFile, setLessonPlanFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [progress, setProgress] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const isEditing = Boolean(initialData);
@@ -35,17 +38,34 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
     try {
       let pdf_path = initialData?.pdf_path;
       let lesson_plan_path = initialData?.lesson_plan_path;
+      let cover_path = initialData?.cover_path;
 
       if (file) {
+        setProgress("Enviando PDF...");
         const path = `${crypto.randomUUID()}-${file.name}`;
         const { error: uploadError } = await supabase.storage
           .from("pdfs")
           .upload(path, file, { contentType: "application/pdf" });
         if (uploadError) throw uploadError;
         pdf_path = path;
+
+        try {
+          setProgress("Gerando capa a partir do PDF...");
+          const coverBlob = await generatePdfCoverBlob(file);
+          const coverPath = `${crypto.randomUUID()}-capa.jpg`;
+          const { error: coverUploadError } = await supabase.storage
+            .from("pdfs")
+            .upload(coverPath, coverBlob, { contentType: "image/jpeg" });
+          if (coverUploadError) throw coverUploadError;
+          cover_path = coverPath;
+        } catch (coverErr) {
+          // Não é crítico: a atividade continua funcionando sem capa.
+          console.error("Falha ao gerar capa do PDF:", coverErr);
+        }
       }
 
       if (lessonPlanFile) {
+        setProgress("Enviando plano de aula...");
         const path = `${crypto.randomUUID()}-${lessonPlanFile.name}`;
         const { error: uploadError } = await supabase.storage
           .from("pdfs")
@@ -53,6 +73,8 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
         if (uploadError) throw uploadError;
         lesson_plan_path = path;
       }
+
+      setProgress("Salvando...");
 
       if (isEditing && initialData) {
         const { error: updateError } = await supabase
@@ -64,6 +86,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
             published,
             pdf_path,
             lesson_plan_path,
+            cover_path,
           })
           .eq("id", initialData.id);
         if (updateError) throw updateError;
@@ -75,6 +98,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
           published,
           pdf_path,
           lesson_plan_path,
+          cover_path,
         });
         if (insertError) throw insertError;
       }
@@ -85,6 +109,7 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
       setError(err instanceof Error ? err.message : "Erro ao salvar.");
     } finally {
       setSaving(false);
+      setProgress("");
     }
   }
 
@@ -165,13 +190,24 @@ export function ActivityForm({ initialData }: { initialData?: Activity }) {
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-      >
-        {saving ? "Salvando..." : "Salvar"}
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {saving ? progress || "Salvando..." : "Salvar"}
+        </button>
+        {isEditing && initialData && (
+          <Link
+            href={`/atividades/${initialData.id}`}
+            target="_blank"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Ver página pública ↗
+          </Link>
+        )}
+      </div>
     </form>
   );
 }

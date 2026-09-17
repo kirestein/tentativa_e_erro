@@ -49,6 +49,13 @@ export default async function AdminJogosPage() {
                 <td className="px-4 py-2 text-right">
                   <div className="flex justify-end gap-4">
                     <Link
+                      href={`/jogos/${game.id}`}
+                      target="_blank"
+                      className="text-sm text-gray-500 hover:underline"
+                    >
+                      Ver página ↗
+                    </Link>
+                    <Link
                       href={`/admin/jogos/${game.id}`}
                       className="text-sm text-blue-600 hover:underline"
                     >

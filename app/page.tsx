@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { ActivityCard } from "@/components/ActivityCard";
 import type { Activity, Game } from "@/types/database";
 
 export default async function HomePage() {
@@ -42,16 +43,7 @@ export default async function HomePage() {
         {activities && activities.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-3">
             {activities.map((activity) => (
-              <Link
-                key={activity.id}
-                href={`/atividades/${activity.id}`}
-                className="rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
-              >
-                <span className="mb-2 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-                  {activity.theme}
-                </span>
-                <h3 className="font-semibold">{activity.title}</h3>
-              </Link>
+              <ActivityCard key={activity.id} activity={activity} />
             ))}
           </div>
         ) : (

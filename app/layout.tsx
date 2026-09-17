@@ -37,6 +37,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/jogos" className="hover:text-blue-600">
                 Jogos
               </Link>
+              <Link href="/sobre" className="hover:text-blue-600">
+                Sobre
+              </Link>
               <Link
                 href="/admin"
                 className="rounded-md border px-3 py-1.5 hover:bg-gray-100"
