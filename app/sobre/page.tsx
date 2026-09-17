@@ -4,38 +4,6 @@ export const metadata: Metadata = {
   title: "Sobre mim | Fazendo Matemática",
 };
 
-const experiences = [
-  {
-    company: "Maple Bear Santana",
-    role: "Professor de Matemática",
-    period: "01/2025 - Atual",
-    highlights: [
-      "Ensino de matemática para alunos do ensino fundamental e médio, utilizando metodologias ativas.",
-      "Desenvolvimento de planos de aula e projetos práticos aplicando os conceitos em situações reais.",
-      "Implementação de atividades interativas e colaborativas para estimular pensamento crítico e criatividade.",
-    ],
-  },
-  {
-    company: "Colégio 14 de Julho",
-    role: "Professor de Física e Matemática Financeira",
-    period: "01/2024 - 07/2026",
-    highlights: [
-      "Itinerário Formativo de Matemática no Ensino Médio, com foco em Matemática Financeira e Geometria.",
-      "Simulações de investimentos financeiros para ensinar o funcionamento do mercado aos alunos.",
-      "Planos de aula que combinam teoria e prática, com tecnologias educacionais modernas.",
-    ],
-  },
-  {
-    company: "Maple Bear Jardins",
-    role: "Professor de Programação",
-    period: "01/2023 - 12/2024",
-    highlights: [
-      "Ensino de programação para diferentes faixas etárias, com foco em lógica, algoritmos e Python.",
-      "Organização de eventos e workshops para competições de programação e feiras de ciências.",
-    ],
-  },
-];
-
 const skills = [
   "Domínio de conteúdo matemático",
   "Planejamento de aulas",
@@ -74,34 +42,28 @@ export default function SobrePage() {
       </section>
 
       <section className="mb-10 rounded-lg border border-blue-100 bg-blue-50 p-6">
-        <p className="text-sm text-blue-900">
-          <span className="font-semibold">Pesquisa: </span>
-          Integro o grupo de pesquisa do Instituto Federal sobre{" "}
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-900">
+          Pesquisa em Mentalidades Matemáticas
+        </h2>
+        <p className="mb-3 text-sm leading-relaxed text-blue-900">
+          Faço parte de um time de pesquisa do Instituto Federal dedicado às{" "}
           <span className="font-semibold">Mentalidades Matemáticas</span>{" "}
-          (Mathematical Mindsets), abordagem baseada no trabalho de Jo
-          Boaler que orienta o desenho das atividades e jogos desta
-          plataforma.
+          (Mathematical Mindsets), abordagem desenvolvida por{" "}
+          <span className="font-semibold">Jo Boaler</span>, professora de
+          educação matemática em Stanford e cofundadora do centro de
+          pesquisas Youcubed.
         </p>
-      </section>
-
-      <section className="mb-10">
-        <h2 className="mb-4 text-xl font-semibold">Experiência</h2>
-        <div className="space-y-6">
-          {experiences.map((exp) => (
-            <div key={exp.company} className="rounded-lg border bg-white p-5">
-              <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3">
-                <h3 className="font-semibold">{exp.role}</h3>
-                <span className="text-xs text-gray-400">{exp.period}</span>
-              </div>
-              <p className="mb-2 text-sm text-gray-500">{exp.company}</p>
-              <ul className="list-disc space-y-1 pl-5 text-sm text-gray-600">
-                {exp.highlights.map((h) => (
-                  <li key={h}>{h}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <p className="text-sm leading-relaxed text-blue-900">
+          A abordagem parte da ideia de que qualquer pessoa é capaz de
+          aprender matemática em altos níveis, unindo descobertas da
+          neurociência a uma mentalidade de crescimento: a crença de que a
+          habilidade matemática se desenvolve com esforço, boas estratégias
+          e apoio — não é um talento fixo com que se nasce. Na prática, isso
+          significa priorizar representações visuais e criativas, conexões
+          entre ideias e tarefas abertas, em vez de memorização isolada de
+          fórmulas. É essa filosofia que orienta o desenho das atividades e
+          dos jogos desta plataforma.
+        </p>
       </section>
 
       <section className="mb-10">
