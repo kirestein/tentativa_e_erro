@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { pdfPublicUrl } from "@/lib/storage";
+import { formatDate, wasUpdatedAfterCreation } from "@/lib/date";
 import type { Activity } from "@/types/database";
 
 export function ActivityCard({ activity }: { activity: Activity }) {
   const coverUrl = activity.cover_path ? pdfPublicUrl(activity.cover_path) : null;
+  const updated = wasUpdatedAfterCreation(activity.created_at, activity.updated_at);
 
   return (
     <Link
@@ -28,6 +30,11 @@ export function ActivityCard({ activity }: { activity: Activity }) {
             {activity.description}
           </p>
         )}
+        <p className="mt-1 text-xs text-gray-400">
+          {updated
+            ? `Atualizada em ${formatDate(activity.updated_at)}`
+            : `Publicada em ${formatDate(activity.created_at)}`}
+        </p>
       </div>
     </Link>
   );

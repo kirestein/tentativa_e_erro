@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { pdfPublicUrl } from "@/lib/storage";
 import { CommentSection } from "@/components/CommentSection";
+import { formatDate, wasUpdatedAfterCreation } from "@/lib/date";
 import type { Activity, ActivityComment } from "@/types/database";
 
 export default async function AtividadeDetailPage({
@@ -34,13 +35,18 @@ export default async function AtividadeDetailPage({
     ? pdfPublicUrl(activity.lesson_plan_path)
     : null;
   const coverUrl = activity.cover_path ? pdfPublicUrl(activity.cover_path) : null;
+  const updated = wasUpdatedAfterCreation(activity.created_at, activity.updated_at);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <span className="mb-2 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
         {activity.theme}
       </span>
-      <h1 className="mb-2 text-3xl font-bold">{activity.title}</h1>
+      <h1 className="mb-1 text-3xl font-bold">{activity.title}</h1>
+      <p className="mb-4 text-sm text-gray-400">
+        Publicada em {formatDate(activity.created_at)}
+        {updated && <> · Atualizada em {formatDate(activity.updated_at)}</>}
+      </p>
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
         {coverUrl && (
